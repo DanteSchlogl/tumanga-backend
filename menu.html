@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TU MANGA – Gestión</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <ul class="nav">
+      <li><a href="mi_pagina.html">← Volver a la web pública</a></li>
+    </ul>
+  </header>
+
+  <main id="app">
+    <!-- 1) MENÚ PRINCIPAL -->
+    <section id="menuPrincipal">
+      <h1>=== SISTEMA DE GESTIÓN - MANGAS ===</h1>
+      <ol>
+        <li><button onclick="mostrar('gestionProductos')">Gestionar Productos</button></li>
+        <li><button onclick="mostrar('gestionCategorias')">Gestionar Categorías</button></li>
+        <li><button onclick="mostrar('verCarrito')">Ver Carrito de Compras</button></li>
+        <li><button onclick="mostrar('realizarPedido')">Realizar Pedido</button></li>
+        <li><button onclick="mostrar('historialPedidos')">Consultar Historial de Pedidos</button></li>
+        <li><button onclick="mostrar('admin')">Administración</button></li>
+        <li><button onclick="salir()">Salir</button></li>
+      </ol>
+    </section>
+
+    <!-- 2) SECCIONES DINÁMICAS (inicialmente ocultas) -->
+    <section id="gestionProductos"  class="panel oculto"></section>
+    <section id="gestionCategorias" class="panel oculto"></section>
+    <section id="verCarrito"       class="panel oculto"></section>
+    <section id="realizarPedido"   class="panel oculto"></section>
+    <section id="historialPedidos" class="panel oculto"></section>
+    <section id="admin"            class="panel oculto"></section>
+  </main>
+
+  <script src="menu.js"></script>
+</body>
+</html>

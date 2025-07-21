@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tu Manga - Catálogo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <ul class="nav">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="catalogo.html">Catálogo</a></li>
+    <li><a href="eventos.html">Eventos</a></li>
+  </ul>
+
+  <h1>Catálogo de Mangas</h1>
+
+  <div id="productos"></div>
+
+  <h2>Tu Carrito</h2>
+  <div id="carrito"></div>
+  <p>Total: $<span id="total">0</span></p>
+  <button onclick="realizarPedido()">Realizar Pedido</button>
+
+  <script>
+    let carrito = [];
+    let total = 0;
+
+    async function cargarProductos() {
+      const res = await fetch("http://localhost:8080/api/productos");
+      const productos = await res.json();
+      const div = document.getElementById("productos");
+      div.innerHTML = "";
+
+      productos.forEach(p => {
+        const categoria = document.createElement("div");
+        categoria.className = "categoria";
+        categoria.innerHTML = `
+          <h2>${p.categoria}</h2>
+          <img src="${p.imagen}" width="300" height="340" alt="${p.nombre}">
+          <div class="manga">
+            <p><strong>${p.nombre}</strong></p>
+            <p>${p.descripcion}</p>
+            <p>$${p.precio}</p>
+            <p>Stock: ${p.stock}</p>
+            <button onclick="agregarAlCarrito(${p.id}, '${p.nombre}', ${p.precio})">
+              Agregar al Carrito
+            </button>
+          </div>
+        `;
+        div.appendChild(categoria);
+      });
+    }
+
+    function agregarAlCarrito(id, nombre, precio) {
+      carrito.push({ id, nombre, precio });
+      total += precio;
+      mostrarCarrito();
+    }
+
+    function mostrarCarrito() {
+      const div = document.getElementById("carrito");
+      div.innerHTML = "";
+      carrito.forEach((item, idx) => {
+        const p = document.createElement("p");
+        p.innerText = `${item.nombre} - $${item.precio}`;
+        div.appendChild(p);
+      });
+      document.getElementById("total").innerText = total;
+    }
+
+    async function realizarPedido() {
+      const cliente = prompt("¿Tu nombre?");
+      if (!cliente) return alert("Debes ingresar tu nombre");
+
+      const res = await fetch("http://localhost:8080/api/pedidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cliente,
+          items: carrito.map(item => ({
+            productoId: item.id,
+            productoNombre: item.nombre,
+            cantidad: 1,
+            precioUnitario: item.precio
+          }))
+        })
+      });
+
+      if (res.ok) {
+        alert("Pedido realizado con éxito");
+        carrito = [];
+        total = 0;
+        mostrarCarrito();
+      } else {
+        alert("Error al crear pedido");
+      }
+    }
+
+    window.onload = cargarProductos;
+  </script>
+</body>
+</html>
